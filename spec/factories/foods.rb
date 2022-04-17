@@ -5,4 +5,6 @@ FactoryBot.define do
     price { 10000.0 }
     category_id { 1 }
   end
+
+  
 end
