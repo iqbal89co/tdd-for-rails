@@ -1,8 +1,7 @@
 Rails.application.routes.draw do
   get 'foods/index'
-  get '/foods/show/:id', to: "foods#show"
-  get '/foods/new', to: "foods#new"
-  get '/foods/edit', to: "foods#edit"
+  resources :foods, :path => 'foods'
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
