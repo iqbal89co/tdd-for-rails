@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe Food, type: :model do
+  it "has a valid factory" do
+    expect(FactoryBot.build(:food)).to be_valid
+  end
   describe 'self#by_letter' do
     it "should return a sorted array of results that match" do
       food1 = Food.create(

@@ -1,7 +1,8 @@
 FactoryBot.define do
   factory :food do
-    name { "MyString" }
-    description { "MyText" }
-    price { 1.5 }
+    name { "Nasi Uduk" }
+    description { "Betawi style steamed rice cooked in coconut milk. Delicious!" }
+    price { 10000.0 }
+    category_id { 1 }
   end
 end
