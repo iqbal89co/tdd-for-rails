@@ -69,37 +69,81 @@ describe FoodsController do
   describe 'POST #create' do
     context "with valid attributes" do
       it "saves the new food in the database" do
+        food = create(:food)
         expect{
-          post :create, params: { food: attributes_for(:food) }
+          post :create, params: { food: food }
         }.to change(Food, :count).by(1)
       end
       it "redirects to foods#show" do
-        post :create, params: { food: attributes_for(:food) }
-        expect(response).to redirect_to("#{foods_path()}/show/1")
+        food = create(:food)
+        post :create, params: { food: food }
+        expect(response).to redirect_to("#{foods_path()}/show/2")
       end
-    end
+      context "with invalid attributes" do
+        it "does not save the new food in the database" do
+            food = create(:invalid_food)
+            expect{
+            post :create, params: { food: food }
+            }.not_to change(Food, :count)
+        end
 
-    context "with invalid attributes" do
-      it "does not save the new food in the database"
-      it "re-renders the :new template"
+        it "re-renders the :new template" do
+            food = create(:invalid_food)
+            post :create, params: { food: food }
+            expect(response).to render_template :new
+        end
+      end
     end
   end
 
   describe 'PATCH #update' do
+    before :each do
+      @food = create(:food)
+    end
     context "with valid attributes" do
-      it "locates the requested @food"
-      it "changes @food's attributes"
-      it "redirects to the food"
+      it "locates the requested @food" do
+        patch :update, params: { id: @food, food: attributes_for(:food) }
+        expect(assigns(:food)).to eq @food
+      end
+      it "changes @food's attributes" do
+        patch :update, params: { id: @food, food: attributes_for(:food, name: 'Nasi Uduk') }
+        @food.reload
+        expect(@food.name).to eq('Nasi Uduk')
+      end
+      it "redirects to the food" do
+        patch :update, params: { id: @food, food: attributes_for(:food) }
+        expect(response).to redirect_to @food
+      end
     end
 
     context "with invalid attributes" do
-      it "does not update the food in the database"
-      it "re-renders the :edit template"
+    before :each do
+      @food = create(:food)
+    end
+      it "does not update the food in the database" do
+        patch :update, params: { id: @food, food: attributes_for(:invalid_food, name: 'Nasi Uduk', price: "Test") }
+        expect(@food.name).not_to eq('Nasi Uduk')
+      end
+      it "re-renders the :edit template" do
+        patch :update, params: { id: @food, food: attributes_for(:invalid_food) }
+        expect(assigns(:food)).to eq @food
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
     end
   end
 
   describe 'DELETE #destroy' do
-    it "deletes the food from the database"
-    it "redirects to foods#index"
+    before :each do
+      @food = create(:food)
+    end
+    it "deletes the food from the database" do
+      expect{
+        delete :destroy, params: { id: @food }
+      }.to change(Food, :count).by(-1)
+    end
+    it "redirects to foods#index" do
+      delete :destroy, params: { id: @food }
+      expect(response).to redirect_to foods_url
+    end
   end
 end
