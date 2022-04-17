@@ -68,8 +68,15 @@ describe FoodsController do
 
   describe 'POST #create' do
     context "with valid attributes" do
-      it "saves the new food in the database"
-      it "redirects to foods#show"
+      it "saves the new food in the database" do
+        expect{
+          post :create, params: { food: attributes_for(:food) }
+        }.to change(Food, :count).by(1)
+      end
+      it "redirects to foods#show" do
+        post :create, params: { food: attributes_for(:food) }
+        expect(response).to redirect_to(food_path(assigns[:food]))
+      end
     end
 
     context "with invalid attributes" do
